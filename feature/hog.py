@@ -35,9 +35,9 @@ def get_hog(img):
 def flatten(img):
     return list(img.flatten())
 
-
+#path didn't generate 001.bmp yet error
 if __name__ == '__main__':
-    img = skimage.io.imread("%s\\001.bmp" % Project.test_data_path)
+    img = skimage.io.imread("%001.bmp" % Project.test_data_path)
     hog_image_1d, hog_image_2d = get_1d_2d_hog(img)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)

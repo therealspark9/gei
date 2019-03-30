@@ -83,8 +83,8 @@ if __name__ == '__main__':
             correct_tbl["%s-%s" % (train_view, val_view)] = 0
     output_result(view_list, correct_tbl)
 
-    # training_x, training_y, validation_x, validation_y = load_training_validation_data()
-    # count = 0
-    # for x in training_x:
-    #     count += 1
-    #     imsave("%s/%03d.bmp" % (config.project.test_data_path, count), x)
+    training_x, training_y, validation_x, validation_y = load_training_validation_data()
+    count = 0
+    for x in training_x:
+         count += 1
+         imsave("%s/%03d.bmp" % (config.Project.test_data_path, count), x)

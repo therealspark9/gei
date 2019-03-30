@@ -1,6 +1,7 @@
 from skimage.io import imread
 from skimage.io import imsave
 from scipy.misc import imresize
+#from skimage.transform import resize
 import numpy as np
 import os
 import logging
@@ -236,7 +237,7 @@ def img_path_to_GEI(img_path):
 
 
 if __name__ == '__main__':
-    import config
+    #import config
     img = imread(config.Project.casia_test_img, as_grey=True)
 
     extract_human_img = extract_human(img)

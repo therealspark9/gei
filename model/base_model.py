@@ -11,4 +11,3 @@ class Model(object):
 
     def predict(self, x_test):
         pass
-
