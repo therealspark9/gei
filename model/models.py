@@ -13,9 +13,11 @@ class RandomForestClassification(Model):
             {'n_estimators': 500, 'max_depth': 100, 'max_features': 100}
         """
         self.model = RandomForestClassifier(n_estimators=500, n_jobs=-1, random_state=2016, verbose=1, max_depth=100, max_features=100)
+#        print('In classs Random forest classification')
 
     def fit(self, x_train, y_train, x_test=None):
         self.model.fit(x_train, y_train)
+#        print('in class random forest classification')
 
     def predict(self, x_test):
         return self.model.predict(x_test)
