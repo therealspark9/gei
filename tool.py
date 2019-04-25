@@ -1,7 +1,6 @@
 from skimage.io import imread
 from skimage.io import imsave
 from scipy.misc import imresize
-#from skimage.transform import resize
 import numpy as np
 import os
 import logging
@@ -225,8 +224,8 @@ def img_path_to_GEI(img_path):
     :return: a GEI image
     """
 
-    #id = img_path.replace("\\", "_")
-    cache_file = "%s_GEI.npy" #% (config.Project.test_data_path, id)  \\%s btw s and GEI
+    #id = img_path.replace("/", "_")
+    cache_file = "GEI.npy" #% (config.Project.test_data_path, id)  #%s\\%s btw " and GEI.npy
     if os.path.exists(cache_file) and os.path.isfile(cache_file):
         return np.load(cache_file)
     img_list = load_image_path_list(img_path)
