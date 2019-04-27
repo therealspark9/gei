@@ -13,7 +13,8 @@ def shift_left(img, left=10.0, is_grey=True):
     """
 
     :param numpy.array img: represented by numpy.array
-    :param float left: how many pixels to shift to left, this value can be negative that means shift to
+    :param float left: how many pixels to shift to left, this value can be negative 
+                    that means shift to
                     right {-left} pixels
     :return: numpy.array
     """
@@ -23,13 +24,15 @@ def shift_left(img, left=10.0, is_grey=True):
         left = int(left)
 
     img_shift_left = np.zeros(img.shape)
+    #np.zeroes converts a y column to 0, 0, 0, ....
     if left >= 0:
-        if is_grey:
-            img_shift_left = img[:, left:]
-        else:
-            img_shift_left = img[:, left:, :]
+        if is_grey:#if img is not rgb
+            img_shift_left = img[:, left:]#shift img by magnitude value "left"
+        else:#if image is rgb
+            img_shift_left = img[:, left:, :]#shift img again, but include rgb colon 
+            #and leave the img.shape[2] i.e RGB value unaltered
     else:
-        if is_grey:
+        if is_grey:#for shifting to right, negative value is within "left" variable
             img_shift_left = img[:, :left]
         else:
             img_shift_left = img[:, :left, :]
@@ -44,12 +47,13 @@ def shift_right(img, right=10.0):
 def shift_up(img, up=10.0, is_grey=True):
     """
     :param numpy.array img: represented by numpy.array
-    :param float up: how many pixels to shift to up, this value can be negative that means shift to
+    :param float up: how many pixels to shift to up, this value can be negative
+                    that means shift to
                     down {-up} pixels
     :return: numpy.array
     """
 
-
+#same as "left but happens in x variable
     if 0 < abs(up) < 1:
         up = int(up * img.shape[0])
     else:
@@ -80,7 +84,9 @@ def load_image_path_list(path):
     :return:
     """
     list_path = os.listdir(path)
-    result = ["%s\\%s" % (path, x) for x in list_path if x.endswith("jpg") or x.endswith("png")]
+    result = ["%s/%s" % (path, x) for x in list_path if x.endswith("jpg") or x.endswith("png")]
+    #first %s is root directory of tool.py, x is a file within the "path" i.e /data/test folder
+    #it only scans x file if ending with jpg or png
     return result
 
 
@@ -98,7 +104,10 @@ def extract_human(img):
     :param img: grey type numpy.array image
     :return:
     """
-
+#left_blank, etc are blank columns i.e black colour in image
+#init all are zero
+#if all values in sum of a column/row are zero, then increase left_blank by 1
+#repeat for right, up and down blank 
     left_blank = 0
     right_blank = 0
 
@@ -146,7 +155,7 @@ def center_person(img, size, method="simple"):
     :param method: string, can be 'sample', or 'gravity'
     :return:
     """
-
+#extracted human image is centered i.e no of left pixels from center = no. of right pixels from center
     best_index = 0
     origin_height, origin_width = img.shape
     if method == "simple":
@@ -155,13 +164,14 @@ def center_person(img, size, method="simple"):
             data = img[:, i]
             for j, val in enumerate(data):
 
-                # encounter body
+                #encounter body
                 if val > 0:
                     now_height = origin_height - j
                     if now_height > highest:
                         highest = now_height
                         best_index = i
                     break
+    """we are only using simple method, so no else
     else:
         pixel_count = []
         for i in range(origin_width):
@@ -176,10 +186,10 @@ def center_person(img, size, method="simple"):
                 min_theta = tmp
                 best_index = i
             count_percent_sum += val
-
+"""
     left_part_column_count = best_index
     right_part_column_count = origin_width - left_part_column_count - 1
-
+#if left column count isnt equal to right, take difference and add to smaller column pixel value
     if left_part_column_count == right_part_column_count:
         return imresize(img, size)
     elif left_part_column_count > right_part_column_count:
@@ -202,10 +212,10 @@ def build_GEI(img_list):
     norm_width = 70
     norm_height = 210
     result = np.zeros((norm_height, norm_width), dtype=np.int)
-
+#normalize size to 70x210
     human_extract_list = []
     for img in img_list:
-        try:
+        try:#append all images over each other
             human_extract_list.append(center_person(extract_human(img), (norm_height, norm_width)))
         except:
             logger.warning("fail to extract human from image")
@@ -223,9 +233,9 @@ def img_path_to_GEI(img_path):
     :param img_path: string
     :return: a GEI image
     """
-
-    #id = img_path.replace("/", "_")
-    cache_file = "GEI.npy" #% (config.Project.test_data_path, id)  #%s\\%s btw " and GEI.npy
+#calls the create gei function, creates a cache file for re-calling GEi if required
+    id = img_path.replace("/", "_")
+    cache_file = "%s/%s_GEI.npy" % (config.Project.test_data_path, id)
     if os.path.exists(cache_file) and os.path.isfile(cache_file):
         return np.load(cache_file)
     img_list = load_image_path_list(img_path)
@@ -236,15 +246,16 @@ def img_path_to_GEI(img_path):
 
 
 if __name__ == '__main__':
-    #import config
+
     img = imread(config.Project.casia_test_img, as_grey=True)
-
+#extract human
     extract_human_img = extract_human(img)
+#center human, call function
     human_extract_center = center_person(extract_human_img, (210, 70))
-
-    imsave("%s\\origin_img.bmp" % config.Project.test_data_path, img)
-    imsave("%s\\extract_human.bmp" % config.Project.test_data_path, extract_human_img)
-
-    imsave("%s\\extract_human_center.bmp" % config.Project.test_data_path, human_extract_center)
+#prints all the images
+    imsave("%s/origin_img.bmp" % config.Project.test_data_path, img)
+    imsave("%s/extract_human.bmp" % config.Project.test_data_path, extract_human_img)
+    imsave("%s/extract_human_center.bmp" % config.Project.test_data_path, human_extract_center)
+#GEI image created, then printed
     GEI_image = img_path_to_GEI(config.Project.casia_test_img_dir)
-    imsave("%s\\GEI.bmp" % config.Project.test_data_path, GEI_image)
+    imsave("%s/GEI.bmp" % config.Project.test_data_path, GEI_image)

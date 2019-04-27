@@ -1,5 +1,6 @@
 __author__ = 'sachh'
-
+#import cv2
+#import glob
 import sys
 sys.path.append('../')
 
@@ -13,12 +14,12 @@ from config import Project
 
 #converting the RGB image to sillhouette
 def get_1d_2d_hog(img):
+    #img.shape returns (345, 456, 3) for RGB
     if len(img.shape) >= 3 and img.shape[2] == 3:
         img = color.rgb2gray(img)
     hog_image_1d, hog_image_2d = hog(img, orientations=8, pixels_per_cell=(16, 16),
                                      cells_per_block=(1, 1), visualise=True)
     return hog_image_1d, hog_image_2d
-
 
 
 def get_hog(img):
@@ -31,15 +32,20 @@ def get_hog(img):
     res = [int(x * 100) for x in hog]
     return res
 
-
+#for future training implementation
 def flatten(img):
     return list(img.flatten())
 
 
 if __name__ == '__main__':
-    img = skimage.io.imread("%s/001.bmp" % Project.test_data_path)
-    hog_image_1d, hog_image_2d = get_1d_2d_hog(img)
+    #create a list of names of images
+    #img list, append names as %03d x for x in (0, )
 
+    img = skimage.io.imread("%s/GEI.bmp" % Project.test_data_path)
+    #for img in glob.glob("D:/gait-energy-image-recognition-gei/data/test/*.bmp"):
+    #    img = cv2.imread(img)
+    hog_image_1d, hog_image_2d = get_1d_2d_hog(img)
+    #call hog function as is created
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)
 
     ax1.axis('off')
